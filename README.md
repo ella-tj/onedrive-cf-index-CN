@@ -6,8 +6,7 @@
 > Hint: This demostration is mainland-orited, so the default language：`中文`
  
 
-**onedrive-cf-index-CN** 是支持世纪互联、采用 `cf worker` 做后端的  `OneDrive` 索引程序。Fork 自 [onedrive-cf-index](https://github.com/spencerwooo/onedrive-cf-index)，只稍加修改，在此感谢🍻 ( 如果您参考原教程，世纪互联版的 client_id client_secret
-refresh_token 获取与原教程不同，其他区别大可忽略 )
+**onedrive-cf-index-CN** 是支持世纪互联、采用 `cf worker` 做后端的  `OneDrive` 索引程序。Fork 自 [onedrive-cf-index](https://github.com/spencerwooo/onedrive-cf-index)，只稍加修改，在此感谢🍻 ( 如果您参考原教程，世纪互联版的 `refresh_token` 获取与原教程不同，其他区别较少 )
 
 
 ## 演示地址
