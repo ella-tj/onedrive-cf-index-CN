@@ -68,6 +68,13 @@ const config = {
    * You can also embed this link (url encoded) directly inside Markdown or HTML.
    */
   proxyDownload: true
+
+  /**
+   * Feature: add CN(21Vianet) support
+   * Usage: simply uncomment the **useOnedriveCN: true** line
+   */
+
+  // useOnedriveCN: true 
 }
 
 export default config
