@@ -116,6 +116,7 @@ npm i
    - `wrangler.toml` 
 
     ```toml
+
       # 刚刚创建的 worker 名
       name = "beet"
 
@@ -123,9 +124,10 @@ npm i
       account_id = ""
 
       # 如果使用了域名，需要添加 zone_id
-      zone_id = ""
+      # zone_id = ""
     ```
    - `src/config/default.js` 
+
 
     ```javascript
       client_id: '',
