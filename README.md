@@ -11,7 +11,7 @@
 
 ## 演示
 
-在线演示: [📁 Beet's OneDrive Index](https://pan.beetcb.com/).
+在线演示: [📁 Beet's OneDrive Index](https://drive.tcxz.cc/).
 
 ---
 ## 部署指南
