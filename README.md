@@ -1,17 +1,17 @@
-[![Hosted on Cloudflare Workers](https://img.shields.io/badge/Hosted%20on-CF%20Workers-f38020?logo=cloudflare&logoColor=f38020&labelColor=282d33)](https://storage.spencerwoo.com/)
+[![Hosted on Cloudflare Workers](https://img.shields.io/badge/Hosted%20on-CF%20Workers-f38020?logo=cloudflare&logoColor=f38020&labelColor=282d33)](https://drive.tcxz.cc/)
 
 
 <h1>onedrive-cf-index-CN</h1>
 
-> Hint: This demostration is mainland-orited, the defalut language：`中文`
+> Hint: This demostration is mainland-orited, so the defalut language：`中文`
  
 
 `onedrive-cf-index-CN` 是支持世纪互联、采用 `cf worker` 做后端的  `OneDrive` 索引程序。Fork 自 [onedrive-cf-index](https://github.com/spencerwooo/onedrive-cf-index)，只稍加修改。
 
 
-## 演示
+## 演示地址
 
-在线演示: [📁 Beet's OneDrive Index](https://pan.beetcb.com/).
+[📁 Beet's OneDrive Index](https://pan.beetcb.com/).
 
 ---
 ## 部署指南
@@ -20,6 +20,7 @@
 ### 准备：
 
 #### 获得 OneDrive API 令牌
+
 > 需自行保存的 key:
 > - redirect_url
 > - client_id
@@ -72,7 +73,7 @@
     如出现问题，请参考 [azure doc](https://docs.azure.cn/zh-cn/active-directory/develop/v2-oauth2-auth-code-flow)
 
 
-#### 获取 firebase 令牌
+#### 获取 firebase 令牌(使用 firebase 做 assess-token 持久化)
 
 > 需自行保存的 key：
 > - `firebase_url`
@@ -112,6 +113,7 @@ npm install
 
 3. 修改两个配置文件的几个选项
    - `wrangler.toml` 
+
     ```toml
       # 刚刚创建的 worker 名
       name = "beet"
@@ -123,6 +125,7 @@ npm install
       zone_id = ""
     ```
    - `src/config/default.js` 
+
     ```javascript
       client_id: '',
 
@@ -154,7 +157,7 @@ wrangler preview
 
 wrangler publish
 ```
-> 如出现网络问题无法上传，可手动复制 `dist/index.js` 到worker
+> 如出现网络问题无法上传，可手动复制 `dist/worker.js` 到 cf worker
 
 
 ### 自定义

@@ -4,9 +4,8 @@ import config from '../config/default'
  * Get access token for microsoft graph API endpoints. Refresh token if needed.
  */
 export async function getAccessToken() {
-  const timestamp = () => {
-    return Math.floor(Date.now() / 1000)
-  }
+  const timestamp = () => Math.floor(Date.now() / 1000)
+
 
   // Fetch access token from Google Firebase Database
   const data = await (await fetch(`${config.firebase_url}?auth=${FIREBASE_TOKEN}`)).json()
