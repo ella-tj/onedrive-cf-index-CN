@@ -167,8 +167,11 @@ wrangler publish
 ### 自定义
 
 `themes/spencer.css` -> CSS
+
 `src/render/htmlWrapper.js` -> HEAD FOOTER
+
 `themes/prism-github.css` -> prism theme
+
 `src/folderView.js` -> home intro
 
 > 后期考虑使用 config 文件自定义 
