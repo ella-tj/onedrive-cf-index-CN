@@ -13,6 +13,7 @@
 
 [📁 Beet's OneDrive Index](https://pan.beetcb.com/).
 
+
 ---
 ## 部署指南
 
@@ -91,10 +92,10 @@ clone （fork） 本项目，安装依赖：
 
 ```sh
 # 安装Wrangler实现项目打包，附加从命令行部署到 cf worker（后项可选）
-npm global add @cloudflare/wrangler
+npm i -g @cloudflare/wrangler
 
 # 安装依赖
-npm install
+npm i
 ```
 使用 wrangler 前的准备:
 
