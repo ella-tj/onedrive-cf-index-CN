@@ -7,7 +7,7 @@ const config = {
   refresh_token: REFRESH_TOKEN,
   client_id: 'cf8ad9b6-627a-45aa-9ec3-f551dc8ef29a',
   client_secret: CLIENT_SECRET,
-  redirect_uri: 'https://heymind.github.io/tools/microsoft-graph-api-auth',
+  redirect_uri: 'http://localhost/od-cf',
 
   /**
    * The base path for indexing, all files and subfolders are public by this tool. For example: `/Public`.

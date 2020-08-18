@@ -1,182 +1,168 @@
 [![Hosted on Cloudflare Workers](https://img.shields.io/badge/Hosted%20on-CF%20Workers-f38020?logo=cloudflare&logoColor=f38020&labelColor=282d33)](https://storage.spencerwoo.com/)
-[![Deploy](https://github.com/spencerwooo/onedrive-cf-index/workflows/Deploy/badge.svg)](https://github.com/spencerwooo/onedrive-cf-index/actions?query=workflow%3ADeploy)
-<image align="right" src="assets/onedrive-cf-index.png" alt="onedrive-cf-index" width="125px" />
 
-<h1>onedrive-cf-index</h1>
 
-🏵 **Yet Another OneDrive Index.** Powered by Cloudflare Workers. Inspired and originated greatly from [heymind/OneDrive-Index-Cloudflare-Worker](https://github.com/heymind/OneDrive-Index-Cloudflare-Worker).
+<h1>onedrive-cf-index-CN</h1>
 
-<h2>Table of contents</h2>
+> Hint: This demostration is mainland-orited, the defalut language：`中文`
+ 
 
-- [Demo](#demo)
-- [Features](#features)
-  - [Improvements](#improvements)
-    - [New features](#new-features)
-    - [Under the hood](#under-the-hood)
-  - [All other features](#all-other-features)
-- [Deployment](#deployment)
-  - [Prerequisites](#prerequisites)
-    - [Get OneDrive API Tokens](#get-onedrive-api-tokens)
-    - [Get Firebase Database Tokens](#get-firebase-database-tokens)
-  - [Preparing](#preparing)
-  - [Building and publishing](#building-and-publishing)
-- [Customizations](#customizations)
+`onedrive-cf-index-CN` 是支持世纪互联、采用 `cf worker` 做后端的  `OneDrive` 索引程序。Fork 自 [onedrive-cf-index](https://github.com/spencerwooo/onedrive-cf-index)，只稍加修改。
 
-## Demo
 
-Live demo: [📁 Spencer's OneDrive Index](https://storage.spencerwoo.com/).
+## 演示
 
-| Scenario |                              Screenshot                              |
-| :------: | :------------------------------------------------------------------: |
-|   Home   | ![](https://cdn.spencer.felinae98.cn/blog/2020/08/200806_153117.png) |
-|  Folder  | ![](https://cdn.spencer.felinae98.cn/blog/2020/08/200806_153124.png) |
+在线演示: [📁 Beet's OneDrive Index](https://pan.beetcb.com/).
 
-## Features
+---
+## 部署指南
 
-### Improvements
 
-#### New features
+### 准备：
 
-- **New design:** [`spencer.css`](themes/spencer.css).
-- File icon rendered according to file type.
-- Use [Font Awesome icons](https://fontawesome.com/) instead of material design icons (For better design consistency).
-- Use [github-markdown-css](https://github.com/sindresorhus/github-markdown-css) for `README.md` rendering → [Demo](https://storage.spencerwoo.com/%F0%9F%A5%9F%20Some%20test%20files/README/).
-- **Add breadcrumbs for better directory navigation.**
-- **Support file previewing:**
-  - Images: `.png`, `.jpg`, `.gif` → [Demo](https://storage.spencerwoo.com/%F0%9F%A5%9F%20Some%20test%20files/Previews/).
-  - Plain text: `.txt` → [Demo](https://storage.spencerwoo.com/%F0%9F%A5%9F%20Some%20test%20files/Previews/iso_8859-1.txt).
-  - Markdown: `.md`, `.mdown`, `.markdown` → [Demo](https://storage.spencerwoo.com/%F0%9F%A5%9F%20Some%20test%20files/Previews/i_m_a_md.md).
-  - Code: `.js`, `.py`, `.c`, `.json`... → [Demo](https://storage.spencerwoo.com/%F0%9F%A5%9F%20Some%20test%20files/Code/pathUtil.js).
-  - **PDF: Lazy loading, loading progress and built-in PDF viewer** → [Demo](<https://storage.spencerwoo.com/%F0%9F%A5%91%20Course%20PPT%20for%20CS%20(BIT)/2018%20-%20%E5%A4%A7%E4%BA%8C%E4%B8%8B%20-%20%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9B%BE%E5%BD%A2%E5%AD%A6/1%20FoundationofCG-Anonymous.pdf>).
-  - **Music / Audio:** `.mp3`, `.aac`, `.wav`, `.oga` → [Demo](<https://storage.spencerwoo.com/%F0%9F%A5%9F%20Some%20test%20files/Multimedia/Elysian%20Fields%20-%20Climbing%20My%20Dark%20Hair.mp3>).
-  - **Videos:** `.mp4`, `.flv`, `.webm`, `.m3u8` → [Demo](<https://storage.spencerwoo.com/%F0%9F%A5%9F%20Some%20test%20files/Multimedia/%E8%BD%A6%E5%BA%93%E5%A5%B3%E7%8E%8B%20%E9%AB%98%E8%B7%9F%E8%B9%A6%E8%BF%AA%20%E4%B9%98%E9%A3%8E%E7%A0%B4%E6%B5%AA%E7%9A%84%E5%A7%90%E5%A7%90%E4%B8%BB%E9%A2%98%E6%9B%B2%E3%80%90%E9%86%8B%E9%86%8B%E3%80%91.mp4>).
-  - ...
-- Code syntax highlight in GitHub style. (With PrismJS.)
-- Image preview supports [Medium style zoom effect](https://github.com/francoischalifour/medium-zoom).
-- Token cached and refreshed with Google Firebase Realtime Database. (~~For those who can't afford Cloudflare Workers KV storage.~~ 😢)
-- Route lazy loading with the help of [Turbolinks®](https://github.com/turbolinks/turbolinks). (Somewhat buggy when going from `folder` to `file preview`, but not user-experience degrading.)
-- ...
+#### 获得 OneDrive API 令牌
+> 需自行保存的 key:
+> - redirect_url
+> - client_id
+> - client_secret
+> - refresh_token
 
-#### Under the hood
+1. `Azure.cn` [应用注册](https://portal.azure.cn/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade) :
+   - `任何组织目录(任何 Azure AD 目录 - 多租户)中的帐户` 
+   - `重定向 url` 键入并保存 `http://localhost/od-cf`
+  
+2. 保存 `client_id` ，添加并保存 `client_secret` 
 
-- CSS animations all the way.
-- Package source code with wrangler and webpack.
-- Convert all CDN assets to load with jsDelivr.
-- No external JS scripts, **all scripts are loaded with webpack!** (Other than some libraries.)
-- ...
+3. API权限（Microsoft Graph）添加 `offline_access, Files.Read, Files.Read.All` `API permissions` 三个权限。
+  
+4. **使用 POSTMAN 获得 `refresh_token`** 
+    > 源库提供的 `https://heymind.github.io/tools/microsoft-graph-api-auth-cn` （世纪互联）尝试失败, 所以人工获取： 
+  
+ - 浏览器访问如下地址，需自行替换 `[client_id]`
+    ```text
+    https://login.chinacloudapi.cn/common/oauth2/v2.0/authorize?client_id=[client_id]&response_type=code&redirect_uri=http://localhost/od-cf&response_mode=query&scope=offline_access%20Files.Read%20Files.ReadWrite.All
+    ```
 
-### All other features
+    登陆后复制地址栏 `code=` 后字符串作为 `authorize_code`, 即为下面 json 里的 `code`
 
-See: [New features | OneDrive-Index-Cloudflare-Worker](https://github.com/heymind/OneDrive-Index-Cloudflare-Worker#-%E6%96%B0%E7%89%B9%E6%80%A7-v11).
 
-## Deployment
+  
+  - 发送 POST 获得 `refresh_token`
+    ，发送 post 请求，可以使用 postman 或 curl
+    ，按照如下 `key：value` 在 POSTMAN 里填入(请自行填入`client_id` 、 `code` 、`client_secret`)
+    
+      
+      ```bash
+      {
+        "client_id": "",
+        "code": "",
+        "redirect_uri": "http://localhost/od-cf",
+        "grant_type": "authorization_code",
+        "client_secret": ""
+      }
+      ```
+    
+    
+    会成功返回 `refresh_token`, 参考下图，保存备用。
 
-> Online token generation tool taken from the generous: <https://heymind.github.io/tools/microsoft-graph-api-auth>.
+    ![](https://i.imgur.com/yhSl4gc.png)
 
-### Prerequisites
 
-#### Get OneDrive API Tokens
+    
 
-1. Create a new blade app here [Microsoft Azure App registrations](https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade) with:
-   1. `Supported account types` set to "Accounts in any organizational directory (Any Azure AD directory - Multitenant) and personal Microsoft accounts (e.g. Skype, Xbox)".
-   2. `Redirect URI (optional)` set to "Web: https://heymind.github.io/tools/microsoft-graph-api-auth".
-2. Get your Application (client) ID - `client_id` at `Overview` panel.
-3. Open `Certificates & secrets` panel and create a new secret called `client_secret`.
-4. Add permissions `offline_access, Files.Read, Files.Read.All` at `API permissions`.
-5. Get your `refresh_token` using <https://heymind.github.io/tools/microsoft-graph-api-auth>.
-6. Create a dedicated folder for your public files inside OneDrive, for instance: `/Public`.
+    如出现问题，请参考 [azure doc](https://docs.azure.cn/zh-cn/active-directory/develop/v2-oauth2-auth-code-flow)
 
-_If you can't fetch the `access_token` and/or `refresh_token` on step 5, please resolve to the solution suggested in [#13](https://github.com/spencerwooo/onedrive-cf-index/issues/13#issuecomment-671027672)._
 
-#### Get Firebase Database Tokens
+#### 获取 firebase 令牌
 
-1. Register new project at [Google Firebase](https://firebase.google.com/).
-2. Enable "Realtime Database" at "Develop » Database", create a key called `auth` and get the URL for your database as `firebase_url` (which should look like `https://xxx.firebaseio.com/auth.json`.).
-3. Set database rules to be: `".read": false` and `".write": false`.
-4. Get your database token `firebase_token` at "Settings » Service Accounts » Database key".
+> 需自行保存的 key：
+> - `firebase_url`
+> - `firebase_token`
 
-After all this hassle, you should have successfully acquired the following tokens and secrets:
+1. 注册 [Google Firebase](https://firebase.google.com/). 创建项目。
+2. 左侧进入 `Database`, 创建
+Realtime 数据库，以锁定模式开始 » 启用 » 修改null值为 `auth` » 得到 `firebase_url` (url示例： `https://xxx.firebaseio.com/auth.json`)
 
-- `refresh_token`
-- `client_id`
-- `client_secret`
-- `redirect_uri`: Defaults to `https://heymind.github.io/tools/microsoft-graph-api-auth`.
-- `base`: Defaults to `/Public`.
-- `firebase_url`
-- `firebase_token`
 
-### Preparing
 
-Fork the repository. Install dependencies.
+### 构建应用
+
+clone （fork） 本项目，安装依赖：
 
 ```sh
-# Install cloudflare workers official packing and publishing tool
-yarn global add @cloudflare/wrangler
+# 安装Wrangler实现项目打包，附加从命令行部署到 cf worker（后项可选）
+npm global add @cloudflare/wrangler
 
-# Install dependencies with yarn
-yarn install
-
-# Login to Cloudflare with wrangler
-wrangler config
-
-# Verify wrangler status with this command
-wrangler whoami
+# 安装依赖
+npm install
 ```
+使用 wrangler 前的准备:
 
-Create a **DRAFT** worker at Cloudflare Workers with a cool name. Get your own Cloudflare `account_id` and `zone_id`: [Docs - Account ID And Zone ID](https://developers.cloudflare.com/workers/quickstart#account-id-and-zone-id).
+1. 进入 https://dash.cloudflare.com/profile/api-tokens » 创建 cloudflare api 令牌（使用Edit Cloudflare Workers模板） » 登陆（示例如下）
+    ```sh
+    # 登陆 cloudflare
+    wrangler config
 
-Modify [`wrangler.toml`](wrangler.toml):
+    # 验证登录状态
+    wrangler whoami
+    ```
+2. 创建 worker ，获取 Account ID
+   在 cloudflare 创建新 worker，并在 worker 的 overview 页面右侧获取到 `Account ID`
 
-- `name`: The draft worker's name, your worker will be published at `<name>.<worker_subdomain>.workers.dev`.
-- `account_id`: Your Cloudflare Account ID.
-- `zone_id`: Your Cloudflare Zone ID.
+   > 如果需要使用 cloudflare 里的域名绑定 worker，需要额外获取 `zone ID`, [参考文档](https://developers.cloudflare.com/workers/quickstart#account-id-and-zone-id)
 
-Modify [`src/config/default.js`](src/config/default.js):
+3. 修改两个配置文件的几个选项
+   - `wrangler.toml` 
+    ```toml
+      # 刚刚创建的 worker 名
+      name = "beet"
 
-- `client_id`: Your `client_id` from above.
-- `base`: Your `base` path from above.
-- `firebase_url`: Your `firebase_url` from above.
+      # 获取的 Account ID
+      account_id = ""
 
-Add secrets to Cloudflare Workers environment variables with `wrangler`:
+      # 如果使用了域名，需要添加 zone_id
+      zone_id = ""
+    ```
+   - `src/config/default.js` 
+    ```javascript
+      client_id: '',
+
+      // 网盘索引目录
+      base = "",
+
+      firebase_url = '',
+    ```
+  
+
+使用 wrangler 正式构建应用：
 
 ```sh
-# Add your refresh_token, client_secret, firebase_token to Cloudflare
+# 上传 refresh_token, client_secret, firebase_token 到 cloudflare 并加密
+
 wrangler secret put REFRESH_TOKEN
-# ... enter your refresh_token from above here
+# ... enter your refresh_token 
 
 wrangler secret put CLIENT_SECRET
-# ... enter your client_secret from above here
+# ... enter your client_secret 
 
 wrangler secret put FIREBASE_TOKEN
-# ... enter your firebase_token from above here
+# ... enter your firebase_token 
 ```
-
-### Building and publishing
-
-You can preview the worker with `wrangler`:
+全部上传成功后，可以预览和发布：
 
 ```sh
 wrangler preview
-```
 
-After making sure everything is ok, you can publish your worker with:
-
-```sh
 wrangler publish
 ```
+> 如出现网络问题无法上传，可手动复制 `dist/index.js` 到worker
 
-You can also create a GitHub Actions for auto publishing your worker on `push`. See [main.yml](.github/workflows/main.yml).
 
-## Customizations
+### 自定义
 
-- You can **(AND SHOULD)** change the `intro` on the default landing page here: [src/folderView.js](src/folderView.js#L51-L55). Write HTML directly.
-- Your custom styles are loaded from [themes/spencer.css](themes/spencer.css), change that according to your customizations.
-- You can also customize Markdown CSS styles, PrismJS code highlight color schemes, etc.
+`themes/spencer.css` -> CSS
+`src/render/htmlWrapper.js` -> HEAD FOOTER
+`themes/prism-github.css` -> prism theme
+`src/folderView.js` -> home intro
 
----
+> 后期考虑使用 config 文件自定义 
 
-🏵 **`onedrive-cf-index`** ©Spencer Woo. Released under the MIT License.
-
-Authored and maintained by Spencer Woo.
-
-[@Portfolio](https://spencerwoo.com/) · [@Blog](https://blog.spencerwoo.com/) · [@GitHub](https://github.com/spencerwooo)

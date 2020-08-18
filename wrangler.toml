@@ -2,7 +2,6 @@ name = "beet"
 type = "webpack"
 workers_dev = true
 account_id = "a1e44a02bc09902ebeafca00dc98996f"
-zone_id = "7ca1c99fe6ac8c08107273c63486ee8b"
 
 [env.staging]
 name = "drive-staging"
