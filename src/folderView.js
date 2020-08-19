@@ -50,8 +50,8 @@ export async function renderFolderView(items, path) {
 
   const intro = `<div class="intro markdown-body" style="text-align: left; margin-top: 2rem;">
                     <p>beet's onedrive index()</p>
-		    <p>thanks: <a href="https://github.com/spencerwooo/onedrive-cf-index">onedrive-cf-index</a></p>
-		    <p style="color: olive">also make od CN(世纪互联) possible in <a href="https://github.com/beetcb/onedrive-cf-index">my repo</a>
+		    <p>Thanks: <a href="https://github.com/spencerwooo/onedrive-cf-index">onedrive-cf-index</a></p>
+		    <p style="color: #F56476">Also make od CN(世纪互联) possible in <a href="https://github.com/beetcb/onedrive-cf-index">onedrive-cf-index-CN</a>
                   </div>`
 
   // Check if current directory contains README.md, if true, then render spinner
