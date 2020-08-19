@@ -26,6 +26,12 @@ const config = {
   useOneDriveCN: true,
 
   /**
+   * Feature: add OneDriveCN (21Vianet) support
+   * Usage: simply change `useOneDriveCN` to true
+   */
+  useOneDriveCN: false,
+
+  /**
    * Feature Caching
    * Enable Cloudflare cache for path pattern listed below.
    * Cache rules:
