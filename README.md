@@ -11,7 +11,7 @@
 
 ## 演示地址
 
-[🍺 Beet's OneDrive Index](https://pan.beetcb.com/).
+[🍺 Beet's OneDrive Index](https://drive.tcxz.cc/).
 
 
 ---
