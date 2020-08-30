@@ -6,7 +6,9 @@
 > Hint: This demostration is mainland-orited, so the default language：`中文`
  
 
-**onedrive-cf-index-CN** 是支持世纪互联、结合 `cf worker` 的  `OneDrive` 索引程序。Fork 自 [onedrive-cf-index(记得star原项目哦)](https://github.com/spencerwooo/onedrive-cf-index)，只稍加修改,在此感谢🍻   
+**onedrive-cf-index-CN** 是支持世纪互联、结合 `cf worker` 的  `OneDrive` 索引程序。
+
+Fork 自 [onedrive-cf-index(记得star原项目哦)](https://github.com/spencerwooo/onedrive-cf-index)，有略微修改🍻   
 
 **源库已支持世纪互联，所以把此文档留作一个简陋的中文指示，希望能帮助到有需要的朋友**
 
@@ -175,5 +177,11 @@ wrangler publish
 
 `src/folderView.js` -> home intro
 
-> 后期考虑使用 config 文件自定义 
+> ~~后期考虑使用 config 文件自定义~~
+修改简单的 `src/render/userProfile` 可自定义如下四项设置
+- title
+- navTitle
+- introContent
+- footerContent
+
 
