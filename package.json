@@ -1,8 +1,8 @@
 {
   "private": true,
-  "name": "onedrive-cf-index",
+  "name": "onedrive-cf-index-CN",
   "version": "1.0.0",
-  "description": "A template for kick starting a Cloudflare Workers project",
+  "description": "Fork from onedrive-cf-index",
   "main": "./src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -10,7 +10,7 @@
     "lint": "eslint src/**/* *.js --color --fix",
     "dev": "wrangler preview --watch"
   },
-  "author": "spencerwooo <spencerwoo98@foxmail.com>",
+  "author": "beet@beetcb.com",
   "license": "MIT",
   "devDependencies": {
     "eslint": "^7.6.0",

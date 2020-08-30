@@ -1,4 +1,5 @@
 import { favicon } from './favicon'
+import { userProfile } from './userProfile'
 
 const COMMIT_HASH = '89afde99425f90047d6cde015bb90ab7d5b64b2f'
 
@@ -9,7 +10,7 @@ export function renderHTML(body) {
       <meta charset="utf-8" />
       <meta http-equiv="x-ua-compatible" content="ie=edge, chrome=1" />
       <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-      <title>Beet's OneDrive Index</title>
+      <title>${userProfile.title}</title>
       <link rel="shortcut icon" type="image/png" sizes="16x16" href="${favicon}" />
       <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.1/css/all.min.css" rel="stylesheet">
       <link href="https://cdn.jsdelivr.net/gh/spencerwooo/onedrive-cf-index@${COMMIT_HASH}/themes/spencer.css" rel="stylesheet">
@@ -21,10 +22,10 @@ export function renderHTML(body) {
       <script src="https://cdn.jsdelivr.net/npm/turbolinks@5.2.0/dist/turbolinks.min.js"></script>
     </head>
     <body>
-      <nav id="navbar" data-turbolinks-permanent><div class="brand">👏 Beet's OneDrive Index</div></nav>
+      <nav id="navbar" data-turbolinks-permanent><div class="brand">${userProfile.navTitle}</div></nav>
       ${body}
       <div id="flex-container" data-turbolinks-permanent style="flex-grow: 1;"></div>
-      <footer id="footer" data-turbolinks-permanent><p>thanks: <a href="https://github.com/spencerwooo/onedrive-cf-index">onedrive-cf-index</a>, hosted on <a href="https://www.cloudflare.com/products/cloudflare-workers/">Cloudflare Workers</a>.</p></footer>
+      <footer id="footer" data-turbolinks-permanent>${userProfile.footerContent}</footer>
       <script>
         Turbolinks.start()
         Prism.highlightAll()

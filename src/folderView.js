@@ -1,4 +1,9 @@
-import { getClassNameForMimeType, getClassNameForFilename } from 'font-awesome-filetypes'
+import { userProfile } from './render/userProfile'
+
+import {
+  getClassNameForMimeType,
+  getClassNameForFilename
+} from 'font-awesome-filetypes'
 
 import { renderHTML } from './render/htmlWrapper'
 import { renderPath } from './render/pathUtil'
@@ -36,23 +41,28 @@ function readableFileSize(bytes, si) {
 export async function renderFolderView(items, path) {
   const isIndex = path === '/'
 
-  const el = (tag, attrs, content) => `<${tag} ${attrs.join(' ')}>${content}</${tag}>`
+  const el = (tag, attrs, content) =>
+    `<${tag} ${attrs.join(' ')}>${content}</${tag}>`
   const div = (className, content) => el('div', [`class=${className}`], content)
   const item = (icon, fileName, fileAbsoluteUrl, size) =>
     el(
       'a',
-      [`href="${fileAbsoluteUrl}"`, 'class="item"', size ? `size="${size}"` : ''],
+      [
+        `href="${fileAbsoluteUrl}"`,
+        'class="item"',
+        size ? `size="${size}"` : ''
+      ],
       el('i', [`class="${icon}"`], '') +
         fileName +
         el('div', ['style="flex-grow: 1;"'], '') +
-        (fileName === '..' ? '' : el('span', ['class="size"'], readableFileSize(size)))
+        (fileName === '..'
+          ? ''
+          : el('span', ['class="size"'], readableFileSize(size)))
     )
 
   const intro = `<div class="intro markdown-body" style="text-align: left; margin-top: 2rem;">
-                    <h2>🍻 beet's onedrive index</h2>
-		    <p>Thanks: <a href="https://github.com/spencerwooo/onedrive-cf-index">onedrive-cf-index</a></p>
-		    <p style="color: #F56476">Also make od CN(世纪互联) possible in <a href="https://github.com/beetcb/onedrive-cf-index">onedrive-cf-index-CN</a>
-                  </div>`
+                   ${userProfile.introContent}
+                 </div>`
 
   // Check if current directory contains README.md, if true, then render spinner
   let readmeExists = false
@@ -70,7 +80,12 @@ export async function renderFolderView(items, path) {
             items
               .map(i => {
                 if ('folder' in i) {
-                  return item('far fa-folder', i.name, `${path}${i.name}/`, i.size)
+                  return item(
+                    'far fa-folder',
+                    i.name,
+                    `${path}${i.name}/`,
+                    i.size
+                  )
                 } else if ('file' in i) {
                   // Check if README.md exists
                   if (!readmeExists) {
@@ -97,7 +112,9 @@ export async function renderFolderView(items, path) {
               .join('')
         )
       ) +
-      (readmeExists && !isIndex ? await renderMarkdown(readmeFetchUrl, 'fade-in-fwd', '') : '') +
+      (readmeExists && !isIndex
+        ? await renderMarkdown(readmeFetchUrl, 'fade-in-fwd', '')
+        : '') +
       (isIndex ? intro : '')
   )
   return renderHTML(body)
