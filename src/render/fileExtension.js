@@ -31,7 +31,6 @@ const extensions = {
   html: preview.code,
   ts: preview.code,
   vue: preview.code,
-  json: preview.code,
   yaml: preview.code,
   toml: preview.code,
 
