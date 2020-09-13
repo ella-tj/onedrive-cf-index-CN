@@ -16,7 +16,11 @@ async function handle(request) {
     return handleRequest(request)
   } else if (AUTH_ENABLED === true) {
     const credentials = parseAuthHeader(request.headers.get('Authorization'))
-    if (!credentials || credentials.name !== NAME || credentials.pass !== PASS) {
+    if (
+      !credentials ||
+      credentials.name !== NAME ||
+      credentials.pass !== PASS
+    ) {
       return unauthorizedResponse('Unauthorized')
     } else {
       return handleRequest(request)
@@ -35,7 +39,8 @@ const cache = caches.default
  * @param {string} pathname The absolute path to file
  */
 function wrapPathName(pathname) {
-  pathname = encodeURIComponent(config.base) + (pathname === '/' ? '' : pathname)
+  pathname =
+    encodeURIComponent(config.base) + (pathname === '/' ? '' : pathname)
   return pathname === '/' || pathname === '' ? '' : ':' + pathname
 }
 
@@ -52,9 +57,13 @@ async function handleRequest(request) {
 
   const rawImage = searchParams.get('raw')
   const thumbnail = config.thumbnail ? searchParams.get('thumbnail') : false
-  const proxied = config.proxyDownload ? searchParams.get('proxied') !== null : false
+  const proxied = config.proxyDownload
+    ? searchParams.get('proxied') !== null
+    : false
 
-  const oneDriveApiEndpoint = config.useOneDriveCN ? 'microsoftgraph.chinacloudapi.cn' : 'graph.microsoft.com'
+  const oneDriveApiEndpoint = config.useOneDriveCN
+    ? 'microsoftgraph.chinacloudapi.cn'
+    : 'graph.microsoft.com'
 
   if (thumbnail) {
     const url = `https://${oneDriveApiEndpoint}/v1.0/me/drive/root:${base +
@@ -70,7 +79,7 @@ async function handleRequest(request) {
     })
   }
 
-  const url = `https://${oneDriveApiEndpoint}/v1.0/me/drive/root${wrapPathName(
+  let url = `https://${oneDriveApiEndpoint}/v1.0/me/drive/root${wrapPathName(
     pathname
   )}?select=name,eTag,size,id,folder,file,image,%40microsoft.graph.downloadUrl&expand=children`
   const resp = await fetch(url, {
@@ -81,18 +90,44 @@ async function handleRequest(request) {
 
   let error = null
   if (resp.ok) {
-    const data = await resp.json()
+    let data = await resp.json()
+
+    // collecting clildren to Array —— `data.clildren`
+    if (data.folder && data.folder.childCount > 200) {
+      url = `https://${oneDriveApiEndpoint}/v1.0/me/drive/root${wrapPathName(
+        pathname.slice(0, pathname.length - 1)
+      )}:/children?select=name,eTag,size,id,folder,file,image,%40microsoft.graph.downloadUrl`
+      while (url) {
+        const nextData = await (
+          await fetch(url, {
+            headers: {
+              Authorization: `bearer ${accessToken}`
+            }
+          })
+        ).json()
+        url.includes('skiptoken') && data.children.push(...nextData.value)
+        url = nextData['@odata.nextLink']
+      }
+    }
 
     if ('file' in data) {
       // Render file preview view or download file directly
-      const fileExt = data.name.split('.').pop().toLowerCase()
+      const fileExt = data.name
+        .split('.')
+        .pop()
+        .toLowerCase()
 
       // Render image directly if ?raw=true parameters are given
       if (rawImage || !(fileExt in extensions)) {
-        return await handleFile(request, pathname, data['@microsoft.graph.downloadUrl'], {
-          proxied,
-          fileSize: data.size
-        })
+        return await handleFile(
+          request,
+          pathname,
+          data['@microsoft.graph.downloadUrl'],
+          {
+            proxied,
+            fileSize: data.size
+          }
+        )
       }
 
       return new Response(await renderFilePreview(data, pathname, fileExt), {
@@ -115,11 +150,12 @@ async function handleRequest(request) {
         }
       }
 
+      console.log('%c # before', 'color:red', data.children)
       // 302 all folder requests that doesn't end with /
       if (!request.url.endsWith('/')) {
         return Response.redirect(request.url + '/', 302)
       }
-
+      console.log('%c # after 302', 'color:red', data.children)
       return new Response(await renderFolderView(data.children, pathname), {
         headers: {
           'Access-Control-Allow-Origin': '*',
