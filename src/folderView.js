@@ -1,3 +1,5 @@
+import { userProfile } from './render/userProfile'
+
 import {
   getClassNameForMimeType,
   getClassNameForFilename
@@ -59,10 +61,8 @@ export async function renderFolderView(items, path) {
     )
 
   const intro = `<div class="intro markdown-body" style="text-align: left; margin-top: 2rem;">
-                    <h2>Yoo, I'm Spencer Woo 👋</h2>
-                    <p>This is Spencer's OneDrive public directory listing. Feel free to download any files that you find useful. Reach me at: spencer.woo [at] outlook [dot] com.</p>
-                    <p><a href="https://spencerwoo.com">Portfolio</a> · <a href="https://blog.spencerwoo.com">Blog</a> · <a href="https://github.com/spencerwooo">GitHub</a></p>
-                  </div>`
+                   ${userProfile.introContent}
+                 </div>`
 
   // Check if current directory contains README.md, if true, then render spinner
   let readmeExists = false
@@ -96,18 +96,8 @@ export async function renderFolderView(items, path) {
                   // Render file icons
                   let fileIcon = getClassNameForMimeType(i.file.mimeType)
                   if (fileIcon === 'fa-file') {
-                    // Check for files that haven't been rendered as expected
-                    const extension = i.name.split('.').pop()
-                    if (extension === 'md') {
+                    if (i.name.split('.').pop() === 'md') {
                       fileIcon = 'fab fa-markdown'
-                    } else if (
-                      ['7z', 'rar', 'bz2', 'xz', 'tar', 'wim'].includes(
-                        extension
-                      )
-                    ) {
-                      fileIcon = 'far fa-file-archive'
-                    } else if (['flac', 'oga', 'opus'].includes(extension)) {
-                      fileIcon = 'far fa-file-audio'
                     } else {
                       fileIcon = `far ${getClassNameForFilename(i.name)}`
                     }
