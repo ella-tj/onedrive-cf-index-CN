@@ -70,22 +70,30 @@ async function handleRequest(request) {
       (pathname === '/' ? '' : pathname)}:/thumbnails/0/${thumbnail}/content`
     const resp = await fetch(url, {
       headers: {
-        Authorization: `bearer ${accessToken}`
-      }
+        Authorization: `bearer ${accessToken}`,
+      },
     })
 
     return await handleFile(request, pathname, resp.url, {
-      proxied
+      proxied,
     })
   }
 
-  let url = `https://${oneDriveApiEndpoint}/v1.0/me/drive/root${wrapPathName(
-    pathname
-  )}?select=name,eTag,size,id,folder,file,image,%40microsoft.graph.downloadUrl&expand=children`
+  const isRequestFolder = request.url.endsWith('/')
+
+  // using different api to handle file or folder
+  let url = isRequestFolder
+    ? `https://${oneDriveApiEndpoint}/v1.0/me/drive/root${wrapPathName(
+        pathname.slice(0, pathname.length - (request.url.endsWith('/') ? 1 : 0))
+      )}:/children?select=name,eTag,size,id,folder,file,image,%40microsoft.graph.downloadUrl`
+    : `https://${oneDriveApiEndpoint}/v1.0/me/drive/root${wrapPathName(
+        pathname
+      )}?select=name,eTag,size,id,folder,file,image,%40microsoft.graph.downloadUrl&expand=children`
+
   const resp = await fetch(url, {
     headers: {
-      Authorization: `bearer ${accessToken}`
-    }
+      Authorization: `bearer ${accessToken}`,
+    },
   })
 
   let error = null
@@ -93,21 +101,17 @@ async function handleRequest(request) {
     let data = await resp.json()
 
     // collecting clildren to Array —— `data.clildren`
-    if (data.folder && data.folder.childCount > 200) {
-      url = `https://${oneDriveApiEndpoint}/v1.0/me/drive/root${wrapPathName(
-        pathname.slice(0, pathname.length - 1)
-      )}:/children?select=name,eTag,size,id,folder,file,image,%40microsoft.graph.downloadUrl`
-      while (url) {
-        const nextData = await (
-          await fetch(url, {
-            headers: {
-              Authorization: `bearer ${accessToken}`
-            }
-          })
-        ).json()
-        url.includes('skiptoken') && data.children.push(...nextData.value)
-        url = nextData['@odata.nextLink']
-      }
+    url = data['@odata.nextLink'] || null
+    while (url) {
+      const nextData = await (
+        await fetch(url, {
+          headers: {
+            Authorization: `bearer ${accessToken}`,
+          },
+        })
+      ).json()
+      url.includes('skiptoken') && data.value.push(...nextData.value)
+      url = nextData['@odata.nextLink']
     }
 
     if ('file' in data) {
@@ -125,7 +129,7 @@ async function handleRequest(request) {
           data['@microsoft.graph.downloadUrl'],
           {
             proxied,
-            fileSize: data.size
+            fileSize: data.size,
           }
         )
       }
@@ -133,10 +137,10 @@ async function handleRequest(request) {
       return new Response(await renderFilePreview(data, pathname, fileExt), {
         headers: {
           'Access-Control-Allow-Origin': '*',
-          'content-type': 'text/html'
-        }
+          'content-type': 'text/html',
+        },
       })
-    } else if ('folder' in data) {
+    } else {
       // Render folder view, list all children files
       if (config.upload && request.method === 'POST') {
         const filename = searchParams.get('upload')
@@ -145,25 +149,22 @@ async function handleRequest(request) {
           return await handleUpload(request, pathname, filename)
         } else {
           return new Response('', {
-            status: 400
+            status: 400,
           })
         }
       }
 
-      console.log('%c # before', 'color:red', data.children)
       // 302 all folder requests that doesn't end with /
-      if (!request.url.endsWith('/')) {
+      if (!isRequestFolder) {
         return Response.redirect(request.url + '/', 302)
       }
-      console.log('%c # after 302', 'color:red', data.children)
-      return new Response(await renderFolderView(data.children, pathname), {
+
+      return new Response(await renderFolderView(data.value, pathname), {
         headers: {
           'Access-Control-Allow-Origin': '*',
-          'content-type': 'text/html'
-        }
+          'content-type': 'text/html',
+        },
       })
-    } else {
-      error = `unknown data ${JSON.stringify(data)}`
     }
   } else {
     error = (await resp.json()).error
@@ -176,15 +177,15 @@ async function handleRequest(request) {
         return new Response(body, {
           status: 404,
           headers: {
-            'content-type': 'application/json'
-          }
+            'content-type': 'application/json',
+          },
         })
       default:
         return new Response(body, {
           status: 500,
           headers: {
-            'content-type': 'application/json'
-          }
+            'content-type': 'application/json',
+          },
         })
     }
   }
