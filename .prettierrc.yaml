@@ -7,5 +7,5 @@ singleQuote: true
 # (arg) => {} => arg => {}
 arrowParens: avoid
 
-# tab Width
 tabWidth: 2
+printWidth: 120
