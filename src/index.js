@@ -73,9 +73,11 @@ async function handleRequest(request) {
   const isRequestFolder = pathname.endsWith('/')
 
   // using different api to handle file or folder
-  let url = isRequestFolder
-    ? `https://${oneDriveApiEndpoint}/v1.0/me/drive/root${wrapPathName(pathname.replace(/\/$/, ''))}:/children`
-    : `https://${oneDriveApiEndpoint}/v1.0/me/drive/root${wrapPathName(pathname)}`
+  let [
+    url = isRequestFolder
+      ? `https://${oneDriveApiEndpoint}/v1.0/me/drive/root${wrapPathName(pathname.replace(/\/$/, ''))}:/children`
+      : `https://${oneDriveApiEndpoint}/v1.0/me/drive/root${wrapPathName(pathname)}`
+  ] = [request.nextLink]
 
   const resp = await fetch(url, {
     headers: {
@@ -86,19 +88,17 @@ async function handleRequest(request) {
   let error = null
   if (resp.ok) {
     let data = await resp.json()
+    console.log(data)
 
-    // collecting clildren to Array —— `data.clildren`
     url = data['@odata.nextLink'] || null
-    while (url) {
-      const nextData = await (
-        await fetch(url, {
-          headers: {
-            Authorization: `bearer ${accessToken}`
-          }
-        })
-      ).json()
-      url.includes('skiptoken') && data.value.push(...nextData.value)
-      url = nextData['@odata.nextLink']
+    console.log(url)
+    if (url) {
+      request.nextLink = url
+      addEventListener('click', () => {
+        console.warn('clicked')
+        listContainer.remove()
+        handle(request)
+      })
     }
 
     if ('file' in data) {
@@ -141,7 +141,7 @@ async function handleRequest(request) {
         return Response.redirect(request.url + '/', 302)
       }
 
-      return new Response(await renderFolderView(data.value, pathname), {
+      return new Response(await renderFolderView(data.value, pathname, request.nextLink), {
         headers: {
           'Access-Control-Allow-Origin': '*',
           'content-type': 'text/html'

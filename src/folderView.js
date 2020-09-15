@@ -1,9 +1,6 @@
 import { userProfile } from './render/userProfile'
 
-import {
-  getClassNameForMimeType,
-  getClassNameForFilename
-} from 'font-awesome-filetypes'
+import { getClassNameForMimeType, getClassNameForFilename } from 'font-awesome-filetypes'
 
 import { renderHTML } from './render/htmlWrapper'
 import { renderPath } from './render/pathUtil'
@@ -38,26 +35,19 @@ function readableFileSize(bytes, si) {
  * @param {*} items
  * @param {*} isIndex don't show ".." on index page.
  */
-export async function renderFolderView(items, path) {
+export async function renderFolderView(items, path, nextLink) {
   const isIndex = path === '/'
 
-  const el = (tag, attrs, content) =>
-    `<${tag} ${attrs.join(' ')}>${content}</${tag}>`
-  const div = (className, content) => el('div', [`class=${className}`], content)
+  const el = (tag, attrs, content) => `<${tag} ${attrs.join(' ')}>${content}</${tag}>`
+  const div = (className, id, content) => el('div', [`class=${className} ${id}`], content)
   const item = (icon, fileName, fileAbsoluteUrl, size) =>
     el(
       'a',
-      [
-        `href="${fileAbsoluteUrl}"`,
-        'class="item"',
-        size ? `size="${size}"` : ''
-      ],
+      [`href="${fileAbsoluteUrl}"`, 'class="item"', size ? `size="${size}"` : ''],
       el('i', [`class="${icon}"`], '') +
         fileName +
         el('div', ['style="flex-grow: 1;"'], '') +
-        (fileName === '..'
-          ? ''
-          : el('span', ['class="size"'], readableFileSize(size)))
+        (fileName === '..' ? '' : el('span', ['class="size"'], readableFileSize(size)))
     )
 
   const intro = `<div class="intro markdown-body" style="text-align: left; margin-top: 2rem;">
@@ -70,9 +60,11 @@ export async function renderFolderView(items, path) {
 
   const body = div(
     'container',
-    div('path', renderPath(path)) +
+    "id='listContainer'",
+    div('path', '', renderPath(path)) +
       div(
         'items',
+        '',
         el(
           'div',
           ['style="min-width: 600px"'],
@@ -80,12 +72,7 @@ export async function renderFolderView(items, path) {
             items
               .map(i => {
                 if ('folder' in i) {
-                  return item(
-                    'far fa-folder',
-                    i.name,
-                    `${path}${i.name}/`,
-                    i.size
-                  )
+                  return item('far fa-folder', i.name, `${path}${i.name}/`, i.size)
                 } else if ('file' in i) {
                   // Check if README.md exists
                   if (!readmeExists) {
@@ -112,10 +99,9 @@ export async function renderFolderView(items, path) {
               .join('')
         )
       ) +
-      (readmeExists && !isIndex
-        ? await renderMarkdown(readmeFetchUrl, 'fade-in-fwd', '')
-        : '') +
-      (isIndex ? intro : '')
+      (readmeExists && !isIndex ? await renderMarkdown(readmeFetchUrl, 'fade-in-fwd', '') : '') +
+      (isIndex ? intro : '') +
+      (nextLink ? el('a', ['class="pagination" href="###"'], 'Load Next Page') : '')
   )
   return renderHTML(body)
 }
