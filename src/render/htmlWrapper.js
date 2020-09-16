@@ -3,7 +3,7 @@ import { userProfile } from './userProfile'
 
 const COMMIT_HASH = '89afde99425f90047d6cde015bb90ab7d5b64b2f'
 
-export function renderHTML(body) {
+export function renderHTML(body, paginationLink) {
   return `<!DOCTYPE html>
   <html lang="en">
     <head>
@@ -30,6 +30,15 @@ export function renderHTML(body) {
         Turbolinks.start()
         Prism.highlightAll()
         mediumZoom('[data-zoomable]')
+        window.pLink = ${paginationLink}
+        
+        function handlePagination(isNext) {
+          isNext ? pLink.active = pLink.next : pLink.active = pLink.previous
+          fetch(location.href, { 
+            method: 'PUT', 
+            body: JSON.stringify({ pLink })
+          })
+        }
       </script>
     </body>
   </html>`

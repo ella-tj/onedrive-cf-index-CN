@@ -72,13 +72,18 @@ async function handleRequest(request) {
 
   const isRequestFolder = pathname.endsWith('/')
 
+  const isPaging = await request.text()
+  const paginationLink = isPaging ? JSON.parse(isPaging).pLink.active : undefined
+
   // using different api to handle file or folder
   let [
     url = isRequestFolder
-      ? `https://${oneDriveApiEndpoint}/v1.0/me/drive/root${wrapPathName(pathname.replace(/\/$/, ''))}:/children`
+      ? `https://${oneDriveApiEndpoint}/v1.0/me/drive/root${wrapPathName(pathname.replace(/\/$/, ''))}:/children` +
+        (config.pagination.enable && config.pagination.top ? `?$top=${config.pagination.top}` : ``)
       : `https://${oneDriveApiEndpoint}/v1.0/me/drive/root${wrapPathName(pathname)}`
-  ] = [request.nextLink]
+  ] = [paginationLink]
 
+  console.log(url)
   const resp = await fetch(url, {
     headers: {
       Authorization: `bearer ${accessToken}`
@@ -88,17 +93,13 @@ async function handleRequest(request) {
   let error = null
   if (resp.ok) {
     let data = await resp.json()
-    console.log(data)
-
-    url = data['@odata.nextLink'] || null
-    console.log(url)
-    if (url) {
-      request.nextLink = url
-      addEventListener('click', () => {
-        console.warn('clicked')
-        listContainer.remove()
-        handle(request)
-      })
+    console.log('data:', data)
+    if (data['@odata.nextLink']) {
+      request.paginationLink = {
+        previous: url,
+        next: data['@odata.nextLink'],
+        active: undefined
+      }
     }
 
     if ('file' in data) {
@@ -141,7 +142,7 @@ async function handleRequest(request) {
         return Response.redirect(request.url + '/', 302)
       }
 
-      return new Response(await renderFolderView(data.value, pathname, request.nextLink), {
+      return new Response(await renderFolderView(data.value, pathname, request), {
         headers: {
           'Access-Control-Allow-Origin': '*',
           'content-type': 'text/html'

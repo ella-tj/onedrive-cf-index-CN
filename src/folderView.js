@@ -35,7 +35,7 @@ function readableFileSize(bytes, si) {
  * @param {*} items
  * @param {*} isIndex don't show ".." on index page.
  */
-export async function renderFolderView(items, path, nextLink) {
+export async function renderFolderView(items, path, request) {
   const isIndex = path === '/'
 
   const el = (tag, attrs, content) => `<${tag} ${attrs.join(' ')}>${content}</${tag}>`
@@ -60,7 +60,7 @@ export async function renderFolderView(items, path, nextLink) {
 
   const body = div(
     'container',
-    "id='listContainer'",
+    'id="listContainer"',
     div('path', '', renderPath(path)) +
       div(
         'items',
@@ -101,7 +101,10 @@ export async function renderFolderView(items, path, nextLink) {
       ) +
       (readmeExists && !isIndex ? await renderMarkdown(readmeFetchUrl, 'fade-in-fwd', '') : '') +
       (isIndex ? intro : '') +
-      (nextLink ? el('a', ['class="pagination" href="###"'], 'Load Next Page') : '')
+      (request.paginationLink
+        ? el('a', ['class="pagination" onclick="handlePagination(false)"'], 'Previous') +
+          el('a', ['class="pagination" onclick="handlePagination(true)"'], 'Next')
+        : '')
   )
-  return renderHTML(body)
+  return renderHTML(body, JSON.stringify(request.paginationLink))
 }

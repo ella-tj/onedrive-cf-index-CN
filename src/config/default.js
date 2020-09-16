@@ -26,6 +26,17 @@ const config = {
   useOneDriveCN: true,
 
   /**
+   * Feature: Pagination when a floder has multiple(>${top}) files
+   * parmas:
+   * - enable: toggle this feature
+   * - top: specify the page size limit of the result set, a big top's value will slow down fetching speed
+   */
+  pagination: {
+    enable: true,
+    top: 999 // $top accepts a minimum value of 1 and a maximum value of 999 (inclusive)
+  },
+
+  /**
    * Feature Caching
    * Enable Cloudflare cache for path pattern listed below.
    * Cache rules:
@@ -46,7 +57,7 @@ const config = {
     enable: false,
     entireFileCacheLimit: 10000000, // 10MB
     chunkedCacheLimit: 100000000, // 100MB
-    paths: ['/Images'],
+    paths: ['/Images']
   },
 
   /**
@@ -64,7 +75,7 @@ const config = {
    */
   upload: {
     enable: false,
-    key: '',
+    key: ''
   },
 
   /**
@@ -73,7 +84,7 @@ const config = {
    * Example: https://storage.spencerwoo.com/🥟%20Some%20test%20files/Previews/eb37c02438f.png?raw=true&proxied
    * You can also embed this link (url encoded) directly inside Markdown or HTML.
    */
-  proxyDownload: true,
+  proxyDownload: true
 }
 
 export default config
