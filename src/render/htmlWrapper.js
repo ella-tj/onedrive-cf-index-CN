@@ -30,14 +30,12 @@ export function renderHTML(body, paginationLink) {
         Turbolinks.start()
         Prism.highlightAll()
         mediumZoom('[data-zoomable]')
-        window.pLink = ${paginationLink}
-        
+        !window.pLink ? (pLink = ["", "", "${paginationLink}"]) : (pLink = [pLink[1], pLink[2], "${paginationLink}"])
         function handlePagination(isNext) {
-          isNext ? pLink.active = pLink.next : pLink.active = pLink.previous
-          fetch(location.href, { 
-            method: 'PUT', 
-            body: JSON.stringify({ pLink })
-          })
+          addEventListener("turbolinks:request-start", event => {
+            const xhr = event.data.xhr
+            xhr.setRequestHeader("pLink", (isNext ? pLink[2] : pLink[0]))
+          }, {once: true})
         }
       </script>
     </body>
