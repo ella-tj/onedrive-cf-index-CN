@@ -70,18 +70,22 @@ async function handleRequest(request) {
     })
   }
 
-  const isRequestFolder = pathname.endsWith('/')
+  const isRequestFolder = pathname.endsWith('/') || searchParams.get('page')
+  console.log(pathname)
+  const childrenApi =
+    `https://${oneDriveApiEndpoint}/v1.0/me/drive/root${wrapPathName(
+      pathname.replace(/\/(pagination)?$/, '')
+    )}:/children` + (config.pagination.enable && config.pagination.top ? `?$top=${config.pagination.top}` : ``)
 
   // using different api to handle file or folder
-  const url = isRequestFolder
-    ? `https://${oneDriveApiEndpoint}/v1.0/me/drive/root${wrapPathName(pathname.replace(/\/$/, ''))}:/children` +
-      (config.pagination.enable && config.pagination.top ? `?$top=${config.pagination.top}` : ``)
-    : `https://${oneDriveApiEndpoint}/v1.0/me/drive/root${wrapPathName(pathname)}`
+  let url = isRequestFolder ? childrenApi : `https://${oneDriveApiEndpoint}/v1.0/me/drive/root${wrapPathName(pathname)}`
 
   let paginationLink = request.headers.get('pLink')
-  paginationLink = paginationLink && paginationLink !== 'undefined' ? `${url}&$skiptoken=${paginationLink}` : null
+  const paginationIdx = request.headers.get('pIdx') - 0
 
-  const resp = await fetch(paginationLink || url, {
+  if (paginationLink && paginationLink !== 'undefined') url = `${childrenApi}&$skiptoken=${paginationLink}`
+  console.log([url])
+  const resp = await fetch(url, {
     headers: {
       Authorization: `bearer ${accessToken}`
     }
@@ -90,7 +94,12 @@ async function handleRequest(request) {
   let error = null
   if (resp.ok) {
     let data = await resp.json()
-    if (data['@odata.nextLink']) request.paginationLink = data['@odata.nextLink'].match(/&\$skiptoken=(.+)/)[1]
+    if (data['@odata.nextLink']) {
+      request.pIdx = paginationIdx ? paginationIdx : 1
+      request.pLink = data['@odata.nextLink'].match(/&\$skiptoken=(.+)/)[1]
+    } else {
+      if (paginationIdx) request.pIdx = 'done'
+    }
 
     if ('file' in data) {
       // Render file preview view or download file directly

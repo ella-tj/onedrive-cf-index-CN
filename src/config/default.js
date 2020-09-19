@@ -33,7 +33,7 @@ const config = {
    */
   pagination: {
     enable: true,
-    top: 99 // $top accepts a minimum value of 1 and a maximum value of 999 (inclusive)
+    top: 222 // $top accepts a minimum value of 1 and a maximum value of 999 (inclusive)
   },
 
   /**
