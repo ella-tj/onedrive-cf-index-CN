@@ -4,30 +4,12 @@ import { userProfile } from './userProfile'
 
 const COMMIT_HASH = '89afde99425f90047d6cde015bb90ab7d5b64b2f'
 
-/*
-  !window.pLink
-  ? (pLink = ['', '', '${pLink}', 1])
-  : (pLink = [pLink[1], pLink[2], '${pLink}', pLink[3]])
-  function handlePagination(isNext) {
-  isNext ? pLink[3]++ : pLink[3] > 1 && pLink[3]--
-  addEventListener(
-    'turbolinks:request-start',
-    event => {
-      const xhr = event.data.xhr
-      xhr.setRequestHeader('pLink', isNext ? pLink[2] : pLink[0])
-      xhr.setRequestHeader('pIdx', pLink[3] + '')
-    },
-    { once: true }
-  )
-  }
-*/
-
 const pagination = (pIdx, attrs) => {
   const handleP = v => `onclick="handlePagination(${v})"`
   if (pIdx) {
     switch (pIdx) {
-      case 'done':
-        attrs = [`class="previous" href="pagination?page=${pIdx - 1}" ${handleP(0)}"`, `class="previous disabled"`]
+      case pIdx < 0 ? pIdx : null:
+        attrs = [`class="previous" href="pagination?page=${-pIdx - 1}" ${handleP(0)}"`, `class="previous disabled"`]
         break
       case 1:
         attrs = ['class="previous disabled"', `class="next" href="pagination?page=${pIdx + 1}" ${handleP(1)}`]
@@ -73,7 +55,20 @@ export function renderHTML(body, pLink, pIdx) {
         Turbolinks.start()
         Prism.highlightAll()
         mediumZoom('[data-zoomable]')
-        'use strict';!window.pLink?pLink=['','','${pLink}',1]:pLink=[pLink[1],pLink[2],'${pLink}',pLink[3]];function handlePagination(isNext){isNext?pLink[3]++:pLink[3]>1&&pLink[3]--;addEventListener('turbolinks:request-start',function(event){var xhr=event.data.xhr;xhr.setRequestHeader('pLink',isNext?pLink[2]:pLink[0]);xhr.setRequestHeader('pIdx',pLink[3]+'');},{once:true});}
+        !window.pLink ? (pLink = ['', '', '${pLink}', 1]) : (pLink = [pLink[1], pLink[2], '${pLink}', pLink[3]])
+        function handlePagination(isNext) {
+          isNext ? pLink[3]++ : pLink[3] > 1 && pLink[3]--
+          addEventListener(
+            'turbolinks:request-start',
+            event => {
+              const xhr = event.data.xhr
+              xhr.setRequestHeader('pLink', isNext ? pLink[2] : pLink[0])
+              xhr.setRequestHeader('pIdx', pLink[3] + '')
+            },
+            { once: true }
+          )
+        }
+        if (!pLink[0] && pLink[2] && pLink[3] === 1) history.pushState(history.state, '', location.pathname.replace('pagination', ''))
       </script>
     </body>
   </html>`
