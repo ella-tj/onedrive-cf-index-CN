@@ -1,6 +1,6 @@
 [![Hosted on Cloudflare Workers](https://img.shields.io/badge/Hosted%20on-CF%20Workers-f38020?logo=cloudflare&logoColor=f38020&labelColor=282d33)](https://drive.tcxz.cc/)
 
-<h1>onedrive-cf-index-CN</h1>
+<h1>onedrive-cf-index(for 21vianet Users)</h1>
 
 > Hint: This demostration is mainland-orited, so the default language：`中文`
 
@@ -136,7 +136,7 @@ npm i
       firebase_url = '',
     ```
 
-使用 wrangler 正式构建应用：
+### 使用 wrangler 正式构建应用：
 
 ```sh
 # 上传 refresh_token, client_secret, firebase_token 到 cloudflare 并加密
@@ -159,7 +159,7 @@ wrangler preview
 wrangler publish
 ```
 
-> 如出现网络问题无法上传，可手动复制 `dist/worker.js` 到 cf worker
+> 如出现网络问题无法上传，可手动复制 `worker/worker.js` 到 cf worker
 
 ### 自定义
 
