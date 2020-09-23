@@ -55,20 +55,25 @@ export function renderHTML(body, pLink, pIdx) {
         Turbolinks.start()
         Prism.highlightAll()
         mediumZoom('[data-zoomable]')
-        !window.pLink ? (pLink = ['', '', '${pLink}', 1]) : (pLink = [pLink[1], pLink[2], '${pLink}', pLink[3]])
+        !window.pLink ? (pLink = [[null, null], '${pLink}', 1]) : (pLink = [[...pLink[0], '${pLink}'], '${pLink}', pLink[2]])
         function handlePagination(isNext) {
-          isNext ? pLink[3]++ : pLink[3] > 1 && pLink[3]--
+          if (isNext) {
+            pLink[2]++
+          } else if (pLink[2] > 1) {
+            pLink[0].pop()
+            pLink[2]--
+          }
           addEventListener(
             'turbolinks:request-start',
             event => {
               const xhr = event.data.xhr
-              xhr.setRequestHeader('pLink', isNext ? pLink[2] : pLink[0])
-              xhr.setRequestHeader('pIdx', pLink[3] + '')
+              xhr.setRequestHeader('pLink', isNext ? pLink[1] : pLink[0][pLink[2] - 1])
+              xhr.setRequestHeader('pIdx', pLink[2] + '')
             },
             { once: true }
           )
         }
-        if (!pLink[0] && pLink[2] && pLink[3] === 1) history.pushState(history.state, '', location.pathname.replace('pagination', ''))
+        if (pLink[2] === 1) history.pushState(history.state, '', location.pathname.replace('pagination', ''))
       </script>
     </body>
   </html>`

@@ -21,7 +21,6 @@ function getPathLink(pathItems, idx) {
  * @param {string} path current working directory, for instance: /🥑 Course PPT for CS (BIT)/2018 - 大三上 - 操作系统/
  */
 export function renderPath(path) {
-  console.log(path)
   const pathItems = path.split('/')
   pathItems[0] = '/'
   pathItems.pop()
