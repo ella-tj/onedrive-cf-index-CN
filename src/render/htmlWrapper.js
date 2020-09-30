@@ -27,6 +27,7 @@ const pagination = (pIdx, attrs) => {
 }
 
 export function renderHTML(body, pLink, pIdx) {
+  const getpLink = pLink ? pLink : ''
   return `<!DOCTYPE html>
   <html lang="en">
     <head>
@@ -52,28 +53,27 @@ export function renderHTML(body, pLink, pIdx) {
       <div id="flex-container" data-turbolinks-permanent style="flex-grow: 1;"></div>
       <footer id="footer" data-turbolinks-permanent>${userProfile.footerContent}</footer>
       <script>
-        Turbolinks.start()
-        Prism.highlightAll()
-        mediumZoom('[data-zoomable]')
-        !window.pLink ? (pLink = [[null, null], '${pLink}', 1]) : (pLink = [[...pLink[0], '${pLink}'], '${pLink}', pLink[2]])
-        function handlePagination(isNext) {
-          if (isNext) {
-            pLink[2]++
-          } else if (pLink[2] > 1) {
-            pLink[0].pop()
-            pLink[2]--
-          }
-          addEventListener(
-            'turbolinks:request-start',
-            event => {
-              const xhr = event.data.xhr
-              xhr.setRequestHeader('pLink', isNext ? pLink[1] : pLink[0][pLink[2] - 1])
-              xhr.setRequestHeader('pIdx', pLink[2] + '')
-            },
-            { once: true }
-          )
-        }
-        if (pLink[2] === 1) history.pushState(history.state, '', location.pathname.replace('pagination', ''))
+      Prism.highlightAll()
+      mediumZoom('[data-zoomable]')
+      if ('${getpLink}') {
+        !window.pLink
+          ? (pLink = [['${getpLink}'], 1])
+          : pLink[0].length < pLink[1] + 1 && (pLink = [[...pLink[0], '${getpLink}'], pLink[1]])
+        if (pLink[1] === 1) history.pushState(history.state, '', location.pathname.replace('pagination', ''))
+      }      
+      function handlePagination(isNext) {
+        isNext ? pLink[1]++ : pLink[1]--
+        addEventListener(
+          'turbolinks:request-start',
+          event => {
+            const xhr = event.data.xhr
+            xhr.setRequestHeader('pLink', pLink[0][pLink[1] -2])
+            xhr.setRequestHeader('pIdx', pLink[1] + '')
+          },
+          { once: true }
+        )
+      }
+      Turbolinks.start()
       </script>
     </body>
   </html>`
