@@ -5,29 +5,29 @@ import { userProfile } from './userProfile'
 const COMMIT_HASH = '89afde99425f90047d6cde015bb90ab7d5b64b2f'
 
 const pagination = (pIdx, attrs) => {
-  const handleP = v => `onclick="handlePagination(${v})"`
+  const getAttrs = (c, h, isNext) =>
+    `class="${c}" ${h ? `href="pagination?page=${h}"` : ''} ${
+      isNext === undefined ? '' : `onclick="handlePagination(${isNext})"`
+    }`
   if (pIdx) {
     switch (pIdx) {
       case pIdx < 0 ? pIdx : null:
-        attrs = [`class="previous" href="pagination?page=${-pIdx - 1}" ${handleP(0)}"`, `class="previous disabled"`]
+        attrs = [getAttrs('pre', -pIdx - 1, 0), getAttrs('next off', null)]
         break
       case 1:
-        attrs = ['class="previous disabled"', `class="next" href="pagination?page=${pIdx + 1}" ${handleP(1)}`]
+        attrs = [getAttrs('pre off', null), getAttrs('next', pIdx + 1, 1)]
         break
       default:
-        attrs = [
-          `class="previous" href="pagination?page=${pIdx - 1}" ${handleP(0)}`,
-          `class="next" href="pagination?page=${pIdx + 1}" ${handleP(1)}`
-        ]
+        attrs = [getAttrs('pre', pIdx - 1, 0), getAttrs('next', pIdx + 1, 1)]
     }
     return `${`<a ${attrs[0]}><i class="fas fa-arrow-left"></i></a>`} &nbsp;${`<a ${attrs[1]}><i class="fas fa-arrow-right"></i></a>`}`
-  } else {
-    return ''
   }
+  return ''
 }
 
 export function renderHTML(body, pLink, pIdx) {
-  const getpLink = pLink ? pLink : ''
+  pLink = pLink ? pLink : ''
+  const p = 'window[pLinkId]'
   return `<!DOCTYPE html>
   <html lang="en">
     <head>
@@ -44,7 +44,7 @@ export function renderHTML(body, pLink, pIdx) {
       <script src="https://cdn.jsdelivr.net/npm/prismjs@1.17.1/plugins/autoloader/prism-autoloader.min.js"></script>
       <script src="https://cdn.jsdelivr.net/npm/medium-zoom@1.0.6/dist/medium-zoom.min.js"></script>
       <script src="https://cdn.jsdelivr.net/npm/turbolinks@5.2.0/dist/turbolinks.min.js"></script>
-      <style>.paginate-container a.disabled {pointer-events: none;opacity:0.5;}</style>
+      <style>.paginate-container a.off {pointer-events: none;opacity: 0.5;}</style>
     </head>
     <body>
       <nav id="navbar" data-turbolinks-permanent><div class="brand">${userProfile.navTitle}</div></nav>
@@ -55,20 +55,22 @@ export function renderHTML(body, pLink, pIdx) {
       <script>
       Prism.highlightAll()
       mediumZoom('[data-zoomable]')
-      if ('${getpLink}') {
-        !window.pLink
-          ? (pLink = [['${getpLink}'], 1])
-          : pLink[0].length < pLink[1] + 1 && (pLink = [[...pLink[0], '${getpLink}'], pLink[1]])
-        if (pLink[1] === 1) history.pushState(history.state, '', location.pathname.replace('pagination', ''))
-      }      
+      if ('${pLink}') {
+        if (!window.pLinkId) history.pushState(history.state, '', location.pathname.replace('pagination', ''))
+        if (location.pathname.endsWith('/')) {
+          pLinkId = history.state.turbolinks.restorationIdentifier
+          ${p} = [['${pLink}'], 1]
+        }
+        ${p}.length < ${p}[1] + 1 && (${p} = [[...${p}[0], '${pLink}'], ${p}[1]])
+      }
       function handlePagination(isNext) {
-        isNext ? pLink[1]++ : pLink[1]--
+        isNext ? ${p}[1]++ : ${p}[1]--
         addEventListener(
           'turbolinks:request-start',
           event => {
             const xhr = event.data.xhr
-            xhr.setRequestHeader('pLink', pLink[0][pLink[1] -2])
-            xhr.setRequestHeader('pIdx', pLink[1] + '')
+            xhr.setRequestHeader('pLink', ${p}[0][${p}[1] -2])
+            xhr.setRequestHeader('pIdx', ${p}[1] + '')
           },
           { once: true }
         )

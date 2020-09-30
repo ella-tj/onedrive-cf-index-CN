@@ -80,7 +80,7 @@ async function handleRequest(request) {
   let url = isRequestFolder ? childrenApi : `https://${oneDriveApiEndpoint}/v1.0/me/drive/root${wrapPathName(pathname)}`
 
   // get & set {pLink ,pIdx} for fetching and paging
-  let paginationLink = request.headers.get('pLink')
+  const paginationLink = request.headers.get('pLink')
   const paginationIdx = request.headers.get('pIdx') - 0
   if (paginationLink && paginationLink !== 'undefined') url = `${childrenApi}&$skiptoken=${paginationLink}`
   const resp = await fetch(url, {
@@ -95,8 +95,8 @@ async function handleRequest(request) {
     if (data['@odata.nextLink']) {
       request.pIdx = paginationIdx ? paginationIdx : 1
       request.pLink = data['@odata.nextLink'].match(/&\$skiptoken=(.+)/)[1]
-    } else {
-      if (paginationIdx) request.pIdx = -paginationIdx
+    } else if (paginationIdx) {
+      request.pIdx = -paginationIdx
     }
 
     if ('file' in data) {
