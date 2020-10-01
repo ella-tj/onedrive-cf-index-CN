@@ -4,7 +4,7 @@
 
 > Hint: This demostration is mainland-orited, so the default language：`中文`
 
-Fork 自 [onedrive-cf-index(记得 star 原项目哦)](https://github.com/spencerwooo/onedrive-cf-index)
+Fork 自 [onedrive-cf-index，请 ⭐star 原项目)](https://github.com/spencerwooo/onedrive-cf-index)
 
 **源库已支持世纪互联，所以把此文档留作一个简陋的中文指示，希望能帮助到有需要的朋友**
 
@@ -170,6 +170,8 @@ wrangler publish
 `themes/prism-github.css` -> prism theme
 
 `src/folderView.js` -> home intro
+
+`src/config/default.js` -> toggle pagination feature
 
 > ~~后期考虑使用 config 文件自定义~~
 > 修改简单的 `src/render/userProfile` 可自定义如下四项设置
