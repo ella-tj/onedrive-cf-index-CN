@@ -61,7 +61,7 @@ export function renderHTML(body, pLink, pIdx) {
           pLinkId = history.state.turbolinks.restorationIdentifier
           ${p} = [['${pLink}'], 1]
         }
-        ${p}.length < ${p}[1] + 1 && (${p} = [[...${p}[0], '${pLink}'], ${p}[1]])
+        ${p}[0].length < ${p}[1] && (${p} = [[...${p}[0], '${pLink}'], ${p}[1]])
       }
       function handlePagination(isNext) {
         isNext ? ${p}[1]++ : ${p}[1]--

@@ -91,7 +91,7 @@ async function handleRequest(request) {
 
   let error = null
   if (resp.ok) {
-    let data = await resp.json()
+    const data = await resp.json()
     if (data['@odata.nextLink']) {
       request.pIdx = paginationIdx ? paginationIdx : 1
       request.pLink = data['@odata.nextLink'].match(/&\$skiptoken=(.+)/)[1]
