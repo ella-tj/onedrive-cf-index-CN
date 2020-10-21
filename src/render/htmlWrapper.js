@@ -2,7 +2,7 @@ import { pink, plum } from 'color-name'
 import { favicon } from './favicon'
 import { userProfile } from './userProfile'
 
-const COMMIT_HASH = '89afde99425f90047d6cde015bb90ab7d5b64b2f'
+const COMMIT_HASH = '5d7579fcfb4729fcb855110c5f0ed5488d1d0d44'
 
 const pagination = (pIdx, attrs) => {
   const getAttrs = (c, h, isNext) =>
@@ -20,7 +20,7 @@ const pagination = (pIdx, attrs) => {
       default:
         attrs = [getAttrs('pre', pIdx - 1, 0), getAttrs('next', pIdx + 1, 1)]
     }
-    return `${`<a ${attrs[0]}><i class="fas fa-arrow-left"></i></a>`} &nbsp;${`<a ${attrs[1]}><i class="fas fa-arrow-right"></i></a>`}`
+    return `${`<a ${attrs[0]}><i class="fas fa-angle-left" style="font-size: 8px;"></i> PREV</a>`}<span>Page ${pIdx}</span> ${`<a ${attrs[1]}>NEXT <i class="fas fa-angle-right" style="font-size: 8px;"></i></a>`}`
   }
   return ''
 }
@@ -28,6 +28,7 @@ const pagination = (pIdx, attrs) => {
 export function renderHTML(body, pLink, pIdx) {
   pLink = pLink ? pLink : ''
   const p = 'window[pLinkId]'
+
   return `<!DOCTYPE html>
   <html lang="en">
     <head>
@@ -49,33 +50,36 @@ export function renderHTML(body, pLink, pIdx) {
     <body>
       <nav id="navbar" data-turbolinks-permanent><div class="brand">${userProfile.navTitle}</div></nav>
       ${body}
-      <div class='paginate-container' style="margin-top: 0.5em">${pagination(pIdx)}</div>
+      <div class="paginate-container">${pagination(pIdx)}</div>
       <div id="flex-container" data-turbolinks-permanent style="flex-grow: 1;"></div>
       <footer id="footer" data-turbolinks-permanent>${userProfile.footerContent}</footer>
       <script>
-      Prism.highlightAll()
-      mediumZoom('[data-zoomable]')
-      if ('${pLink}') {
-        if (!window.pLinkId) history.pushState(history.state, '', location.pathname.replace('pagination', ''))
-        if (location.pathname.endsWith('/')) {
-          pLinkId = history.state.turbolinks.restorationIdentifier
-          ${p} = [['${pLink}'], 1]
+        if (typeof ap !== "undefined" && ap.paused !== true) {
+          ap.pause()
         }
-        ${p}[0].length < ${p}[1] && (${p} = [[...${p}[0], '${pLink}'], ${p}[1]])
-      }
-      function handlePagination(isNext) {
-        isNext ? ${p}[1]++ : ${p}[1]--
-        addEventListener(
-          'turbolinks:request-start',
-          event => {
-            const xhr = event.data.xhr
-            xhr.setRequestHeader('pLink', ${p}[0][${p}[1] -2])
-            xhr.setRequestHeader('pIdx', ${p}[1] + '')
-          },
-          { once: true }
-        )
-      }
-      Turbolinks.start()
+        Prism.highlightAll()
+        mediumZoom('[data-zoomable]')
+        if ('${pLink}') {
+          if (!window.pLinkId) history.pushState(history.state, '', location.pathname.replace('pagination', ''))
+          if (location.pathname.endsWith('/')) {
+            pLinkId = history.state.turbolinks.restorationIdentifier
+            ${p} = [['${pLink}'], 1]
+          }
+          if (${p}[0].length < ${p}[1]) (${p} = [[...${p}[0], '${pLink}'], ${p}[1]])
+        }
+        function handlePagination(isNext) {
+          isNext ? ${p}[1]++ : ${p}[1]--
+          addEventListener(
+            'turbolinks:request-start',
+            event => {
+              const xhr = event.data.xhr
+              xhr.setRequestHeader('pLink', ${p}[0][${p}[1] -2])
+              xhr.setRequestHeader('pIdx', ${p}[1] + '')
+            },
+            { once: true }
+          )
+        }
+        Turbolinks.start()
       </script>
     </body>
   </html>`
