@@ -35,7 +35,7 @@ const cache = caches.default
  * @param {string} pathname The absolute path to file
  */
 function wrapPathName(pathname) {
-  pathname = encodeURIComponent(config.base) + (pathname === '/' ? '' : pathname)
+  pathname = encodeURI(config.base) + (pathname === '/' ? '' : pathname)
   return pathname === '/' || pathname === '' ? '' : ':' + pathname
 }
 
@@ -45,11 +45,15 @@ async function handleRequest(request) {
     if (maybeResponse) return maybeResponse
   }
 
-  const base = encodeURIComponent(config.base)
+  const base = encodeURI(config.base)
   const accessToken = await getAccessToken()
 
   const { pathname, searchParams } = new URL(request.url)
+<<<<<<< HEAD
   const neopathname = pathname.replace(/pagination$/, '')
+=======
+  const neoPathname = pathname.replace(/pagination$/, '')
+>>>>>>> 6954d918f86b699f02e92fdc8c6ae4dd2c99fb20
 
   const rawImage = searchParams.get('raw')
   const thumbnail = config.thumbnail ? searchParams.get('thumbnail') : false
@@ -71,6 +75,7 @@ async function handleRequest(request) {
     })
   }
 
+<<<<<<< HEAD
   const isRequestFolder = neopathname.endsWith('/') || searchParams.get('page')
   const childrenApi =
     `https://${oneDriveApiEndpoint}/v1.0/me/drive/root${wrapPathName(neopathname.replace(/\/$/, ''))}:/children` +
@@ -83,6 +88,20 @@ async function handleRequest(request) {
   const paginationLink = request.headers.get('pLink')
   const paginationIdx = request.headers.get('pIdx') - 0
   if (paginationLink && paginationLink !== 'undefined') url = `${childrenApi}&$skiptoken=${paginationLink}`
+=======
+  const isRequestFolder = pathname.endsWith('/') || searchParams.get('page')
+  const childrenApi =
+    `https://${oneDriveApiEndpoint}/v1.0/me/drive/root${wrapPathName(neoPathname.replace(/\/$/, ''))}:/children` +
+    (config.pagination.enable && config.pagination.top ? `?$top=${config.pagination.top}` : ``)
+  // using different api to handle file or folder: children or driveItem
+  let url = isRequestFolder ? childrenApi : `https://${oneDriveApiEndpoint}/v1.0/me/drive/root${wrapPathName(pathname)}`
+  // get & set {pLink ,pIdx} for fetching and paging
+  const paginationLink = request.headers.get('pLink')
+  const paginationIdx = request.headers.get('pIdx') - 0
+
+  if (paginationLink && paginationLink !== 'undefined') url = `${childrenApi}&$skiptoken=${paginationLink}`
+
+>>>>>>> 6954d918f86b699f02e92fdc8c6ae4dd2c99fb20
   const resp = await fetch(url, {
     headers: {
       Authorization: `bearer ${accessToken}`
@@ -126,7 +145,11 @@ async function handleRequest(request) {
         const filename = searchParams.get('upload')
         const key = searchParams.get('key')
         if (filename && key && config.upload.key === key) {
+<<<<<<< HEAD
           return await handleUpload(request, neopathname, filename)
+=======
+          return await handleUpload(request, neoPathname, filename)
+>>>>>>> 6954d918f86b699f02e92fdc8c6ae4dd2c99fb20
         } else {
           return new Response('', {
             status: 400
@@ -139,7 +162,11 @@ async function handleRequest(request) {
         return Response.redirect(request.url + '/', 302)
       }
 
+<<<<<<< HEAD
       return new Response(await renderFolderView(data.value, neopathname, request), {
+=======
+      return new Response(await renderFolderView(data.value, neoPathname, request), {
+>>>>>>> 6954d918f86b699f02e92fdc8c6ae4dd2c99fb20
         headers: {
           'Access-Control-Allow-Origin': '*',
           'content-type': 'text/html'

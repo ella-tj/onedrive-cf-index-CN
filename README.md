@@ -14,7 +14,30 @@ Fork 自 [onedrive-cf-index，请 ⭐star 原项目)](https://github.com/spencer
 
 ---
 
+<<<<<<< HEAD
 ## 部署指南
+=======
+- **New design:** [`spencer.css`](themes/spencer.css).
+- File icon rendered according to file type. Emoji as folder icon when available (if the first character of the folder name is an emoji).
+- Use [Font Awesome icons](https://fontawesome.com/) instead of material design icons (For better design consistency).
+- Use [github-markdown-css](https://github.com/sindresorhus/github-markdown-css) for `README.md` rendering → [Demo](https://storage.spencerwoo.com/%F0%9F%A5%9F%20Some%20test%20files/README/).
+- **Add breadcrumbs for better directory navigation.**
+- **Support file previewing:**
+  - Images: `.png`, `.jpg`, `.gif` → [Demo](https://storage.spencerwoo.com/%F0%9F%A5%9F%20Some%20test%20files/Previews/).
+  - Plain text: `.txt` → [Demo](https://storage.spencerwoo.com/%F0%9F%A5%9F%20Some%20test%20files/Previews/iso_8859-1.txt).
+  - Markdown: `.md`, `.mdown`, `.markdown` → [Demo](https://storage.spencerwoo.com/%F0%9F%A5%9F%20Some%20test%20files/Previews/i_m_a_md.md).
+  - Code: `.js`, `.py`, `.c`, `.json`... → [Demo](https://storage.spencerwoo.com/%F0%9F%A5%9F%20Some%20test%20files/Code/pathUtil.js).
+  - **PDF: Lazy loading, loading progress and built-in PDF viewer** → [Demo](<https://storage.spencerwoo.com/%F0%9F%A5%91%20Course%20PPT%20for%20CS%20(BIT)/2018%20-%20%E5%A4%A7%E4%BA%8C%E4%B8%8B%20-%20%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9B%BE%E5%BD%A2%E5%AD%A6/1%20FoundationofCG-Anonymous.pdf>).
+  - **Music / Audio:** `.mp3`, `.aac`, `.wav`, `.oga` → [Demo](https://storage.spencerwoo.com/%F0%9F%A5%9F%20Some%20test%20files/Multimedia/Elysian%20Fields%20-%20Climbing%20My%20Dark%20Hair.mp3).
+  - **Videos:** `.mp4`, `.flv`, `.webm`, `.m3u8` → [Demo](https://storage.spencerwoo.com/%F0%9F%A5%9F%20Some%20test%20files/Multimedia/%E8%BD%A6%E5%BA%93%E5%A5%B3%E7%8E%8B%20%E9%AB%98%E8%B7%9F%E8%B9%A6%E8%BF%AA%20%E4%B9%98%E9%A3%8E%E7%A0%B4%E6%B5%AA%E7%9A%84%E5%A7%90%E5%A7%90%E4%B8%BB%E9%A2%98%E6%9B%B2%E3%80%90%E9%86%8B%E9%86%8B%E3%80%91.mp4).
+  - ...
+- Code syntax highlight in GitHub style. (With PrismJS.)
+- Image preview supports [Medium style zoom effect](https://github.com/francoischalifour/medium-zoom).
+- Token cached and refreshed with Google Firebase Realtime Database. (~~For those who can't afford Cloudflare Workers KV storage.~~ 😢)
+- Route lazy loading with the help of [Turbolinks®](https://github.com/turbolinks/turbolinks). (Somewhat buggy when going from `folder` to `file preview`, but not user-experience degrading.)
+- Supports OneDrive 21Vianet.（由世纪互联运营的 OneDrive。）
+- ...
+>>>>>>> 6954d918f86b699f02e92fdc8c6ae4dd2c99fb20
 
 ### 准备：
 
@@ -163,7 +186,14 @@ wrangler publish
 
 ### 自定义
 
+<<<<<<< HEAD
 `themes/spencer.css` -> CSS
+=======
+- You can **(AND SHOULD)** change the `intro` on the default landing page here: [src/folderView.js](src/folderView.js#L51-L55). Write HTML directly.
+- You can **(AND ALSO SHOULD)** change the header of the site here: [src/render/htmlWrapper.js](src/render/htmlWrapper.js#L24).
+- Your custom styles are loaded from [themes/spencer.css](themes/spencer.css), change that according to your customizations. You may also need to change the commit HASH at [src/render/htmlWrapper.js](src/render/htmlWrapper.js#L3).
+- You can also customize Markdown CSS styles, PrismJS code highlight color schemes, etc.
+>>>>>>> 6954d918f86b699f02e92fdc8c6ae4dd2c99fb20
 
 `src/render/htmlWrapper.js` -> HEAD FOOTER
 
