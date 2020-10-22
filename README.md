@@ -163,14 +163,7 @@ wrangler publish
 
 ### 自定义
 
-<<<<<<< HEAD
 `themes/spencer.css` -> CSS
-=======
-- You can **(AND SHOULD)** change the `intro` on the default landing page here: [src/folderView.js](src/folderView.js#L51-L55). Write HTML directly.
-- You can **(AND ALSO SHOULD)** change the header of the site here: [src/render/htmlWrapper.js](src/render/htmlWrapper.js#L24).
-- Your custom styles are loaded from [themes/spencer.css](themes/spencer.css), change that according to your customizations. You may also need to change the commit HASH at [src/render/htmlWrapper.js](src/render/htmlWrapper.js#L3).
-- You can also customize Markdown CSS styles, PrismJS code highlight color schemes, etc.
->>>>>>> 6954d918f86b699f02e92fdc8c6ae4dd2c99fb20
 
 `src/render/htmlWrapper.js` -> HEAD FOOTER
 
