@@ -108,13 +108,13 @@ async function handleRequest(request) {
 
       // Render image directly if ?raw=true parameters are given
       if (rawImage || !(fileExt in extensions)) {
-        return await handleFile(request, neoPathname, data['@microsoft.graph.downloadUrl'], {
+        return await handleFile(request, pathname, data['@microsoft.graph.downloadUrl'], {
           proxied,
           fileSize: data.size
         })
       }
 
-      return new Response(await renderFilePreview(data, neoPathname, fileExt), {
+      return new Response(await renderFilePreview(data, pathname, fileExt), {
         headers: {
           'Access-Control-Allow-Origin': '*',
           'content-type': 'text/html'
