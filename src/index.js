@@ -59,14 +59,14 @@ async function handleRequest(request) {
 
   if (thumbnail) {
     const url = `https://${oneDriveApiEndpoint}/v1.0/me/drive/root:${base +
-      (neopathname === '/' ? '' : neopathname)}:/thumbnails/0/${thumbnail}/content`
+      (neoPathname === '/' ? '' : neoPathname)}:/thumbnails/0/${thumbnail}/content`
     const resp = await fetch(url, {
       headers: {
         Authorization: `bearer ${accessToken}`
       }
     })
 
-    return await handleFile(request, neopathname, resp.url, {
+    return await handleFile(request, neoPathname, resp.url, {
       proxied
     })
   }
@@ -108,13 +108,13 @@ async function handleRequest(request) {
 
       // Render image directly if ?raw=true parameters are given
       if (rawImage || !(fileExt in extensions)) {
-        return await handleFile(request, neopathname, data['@microsoft.graph.downloadUrl'], {
+        return await handleFile(request, neoPathname, data['@microsoft.graph.downloadUrl'], {
           proxied,
           fileSize: data.size
         })
       }
 
-      return new Response(await renderFilePreview(data, neopathname, fileExt), {
+      return new Response(await renderFilePreview(data, neoPathname, fileExt), {
         headers: {
           'Access-Control-Allow-Origin': '*',
           'content-type': 'text/html'
