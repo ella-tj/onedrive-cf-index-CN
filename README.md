@@ -5,6 +5,7 @@
 > Hint: This demostration is mainland-orited, so the default language：`中文`
 
 Fork 自 [onedrive-cf-index，请 ⭐star 原项目 ](https://github.com/spencerwooo/onedrive-cf-index)
+https://github.com/beetcb/onedrive-cf-index-CN
 
 **源库已支持世纪互联，所以把此文档留作一个简陋的中文指示，希望能帮助到有需要的朋友**
 
